@@ -8,6 +8,7 @@
 ## - download is for downloading files uploaded in the db (does streaming)
 #########################################################################
 from gluon import current
+import logging
 
 def index():
     """
@@ -31,6 +32,50 @@ def index2():
     #db = current.db
     restaurantList = db(db.restaurants.id>0).select(db.restaurants.ALL, orderby=~db.restaurants.discount)
     return dict(allRest=restaurantList)
+
+def restaurant():
+    clickedRestaurant = request.args[0]
+
+    # The argument will have dashes instead of spaces. Replace them
+    clickedRestaurant = clickedRestaurant.replace("-"," ")
+    restaurantInfo = db(db.restaurants.name==clickedRestaurant).select(db.restaurants.ALL, orderby=~db.restaurants.discount, limitby=(0,1)).first()
+    paymentStatus = "Not Done"
+    if restaurantInfo:
+        #Stripe handling:
+        from gluon.contrib.stripe import Stripe
+        key="sk_test_GCahWSkWRdvnTUzF8cHDUUKQ"
+        testPostVars = request.post_vars
+        logging.info("In pay3 stuff: " + str(testPostVars))
+        if testPostVars['stripeToken']:
+            token = request.post_vars['stripeToken']
+            amountTotal = int(request.post_vars['inputAmount'])*100
+            d = Stripe(key).charge(
+                       amount=amountTotal,
+                       currency='usd',
+                       token=token,
+                       description='test charge')
+            logging.info(str(d))
+            paymentStatus = d['status'].title()
+        return dict(singleRest=restaurantInfo,status=paymentStatus)
+    else:
+        return "No restaurant with name: " + clickedRestaurant
+
+def pay3():
+    from gluon.contrib.stripe import Stripe
+    key="sk_test_GCahWSkWRdvnTUzF8cHDUUKQ"
+    testPostVars = request.post_vars
+    logging.info("In pay3 stuff: " + str(testPostVars))
+    if testPostVars:
+        token = request.post_vars['stripeToken']
+        amountTotal = int(request.post_vars['amount'])*100
+        d = Stripe(key).charge(
+                   amount=amountTotal,
+                   currency='usd',
+                   token=token,
+                   description='test charge')
+        logging.info(str(d))
+        return dict(form=d)
+    return dict(form=testPostVars)
 
 def fillDummyDB():
     # This fills the DB with dummy restaurants

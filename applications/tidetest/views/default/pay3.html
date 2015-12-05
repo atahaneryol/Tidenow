@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<title>HTML Tutorial</title>
+<body>
+
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+<p id="demo"></p>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    
+<h1>This is a heading that separates stuff</h1>
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<form id="myForm" action="#" method="POST">
+    <input type="text" id="amount" name="amount" />
+    <input type="hidden" id="stripeToken" name="stripeToken" />
+    <input type="hidden" id="stripeEmail" name="stripeEmail" />
+</form>
+<button id="customButton">Purchase</button>
+
+<script>
+  var handler = StripeCheckout.configure({
+    key: 'pk_test_IKnOVX8ySQdPRDS7qdi7bPo9',
+    image: '/img/documentation/checkout/marketplace.png',
+    locale: 'auto',
+    token: function(token) {
+      // Use the token to create the charge with a server-side script.
+      // You can access the token ID with `token.id`
+	  alert("Hello! I am an alert box!");
+      $("#stripeToken").val(token.id);
+      $("#stripeEmail").val(token.email);
+      $("#myForm").submit();
+    }
+  });
+
+  $('#customButton').on('click', function(e) {
+    // Open Checkout with further options
+    alert("Hello! I am an alert box!");
+    var amount = $("#amount").val() * 100;
+    var displayAmount = parseFloat(Math.floor($("#amount").val() * 100) / 100).toFixed(2);
+    handler.open({
+      name: 'Ata',
+      description: 'Custom amount ($' + displayAmount + ')',
+      amount: amount
+    });
+    e.preventDefault();
+  });
+
+  // Close Checkout on page navigation
+  $(window).on('popstate', function() {
+    handler.close();
+  });
+</script>
+<div><table><tr><td style="font-weight:bold;vertical-align:top;">form</td><td style="vertical-align:top;">:</td><td><div><table></table></div></td></tr></table></div>
+</body>
+</html>

@@ -69,7 +69,7 @@
                     {{if i%4==0 and i!=len(allRest)-1:}}
                     <div class="row margin-bottom-20"> {{pass}}
                         <div class="col-md-3 col-sm-6 col-xs-6"> 
-                            <a href="" class="over img-rounded"> 
+                            <a href="{{=URL('restaurant',args=[allRest[i].name.replace(' ','-')])}}" class="over img-rounded">
                                 <img src="{{=URL('static',allRest[i].logoURL)}}" class="width-100" alt="" id="testImage">
                                 <div class="">
                                     <p class="client-name" style="display: block;">{{=allRest[i].name}}</p>
