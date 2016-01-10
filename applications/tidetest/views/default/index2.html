@@ -74,8 +74,14 @@
                                 <div class="">
                                     <p class="client-name" style="display: block;">{{=allRest[i].name}}</p>
                                     <p class="client-details" style="display: block;">{{=allRest[i].description}}<br></p>
-                                    <p class="client-description" style="display: block;"><span id="time" class="time-to-the-left">10:43</span> Left for {{=allRest[i].discount}}% Off</p>
-                                </div>                                 
+                                    {{if allRest[i].discount>0:}}
+                                    <p class="client-description" style="display: block;"><span id="time" class="time-to-the-left">10:43</span> Left for {{=round(allRest[i].discount,1)}}% Off </p>
+                                    {{elif allRest[i].discount==-1: }}
+                                    <p class="client-description" style="display: block;"> Closed! </p>
+                                    {{else: }}
+                                    <p class="client-description" style="display: block;"> Sold Out! </p>
+                                    {{pass}}
+                                </div>
                             </a>                             
                         </div>
                     {{if i%4==3 or i==len(allRest)-1:}}
@@ -104,6 +110,7 @@
         </div>         
         <!-- /#page -->         
         <!-- Load JS here for greater good =============================-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>
 function startTimer(duration, display) {
     var timer = duration, minutes, seconds;

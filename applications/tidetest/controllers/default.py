@@ -30,7 +30,20 @@ def index2():
     return auth.wiki()
     """
     #db = current.db
-    restaurantList = db(db.restaurants.id>0).select(db.restaurants.ALL, orderby=~db.restaurants.discount)
+    import datetime
+    fulldate = datetime.datetime.today()
+    if fulldate.minute > 30:
+        minute_part = 30
+    else:
+        minute_part = 0
+
+    restaurantList = db((db.currentDiscounts.day_time==fulldate.weekday()+1) &
+                        (db.currentDiscounts.hour_time==fulldate.hour) &
+                        (db.currentDiscounts.min_time==minute_part) ).select(db.currentDiscounts.ALL, orderby=~db.currentDiscounts.discount)
+    #TODO take min of 3 restaurants. Where empty discounts count as 100. But if there are 3 empty discounts then the discount is 0.
+    #TODO make the closed restaurants grey and sold outs red in HTML-CSS.
+
+    #min(restaurantList.discount,restaurantList2.discount,restaurantList3.discount)
     return dict(allRest=restaurantList)
 
 def restaurant():
@@ -87,12 +100,84 @@ def fillDummyDB():
     db.restaurants.insert(name="Olympus", description="Bakery, Breakfast & Lunch", logoURL="extra/static/logos/olympus_logo.png", discount=17)
     db.restaurants.insert(name="Shana", description="Thai", logoURL="extra/static/logos/shana.png", discount=49)
     db.restaurants.insert(name="Tamarine", description="Vietnamese", logoURL="extra/static/logos/tamarine.png", discount=14)
-    db.restaurants.insert(name="Joya", description="Latin American, Tapas Bar", logoURL="extra/static/logos/joya.png", discount=36)
+    #db.restaurants.insert(name="Joya", description="Latin American, Tapas Bar", logoURL="extra/static/logos/joya.png", discount=36)
     return "Success"
+
+def fillDBFromCSV():
+    import csv
+    import os
+    filepath = os.path.join(request.folder,'static/files','site_database_dec12.csv')
+    csvFile = open(filepath,"rb")
+    reader = csv.reader(csvFile)
+    rownum = 0
+    resString = ""
+    for row in reader:
+        # Save header row.
+        if rownum == 0:
+            header = row
+        else:
+            name = row[0]
+            region = row[1]
+            res_id = row[2]
+            day = row[3]
+            hour = row[4]
+            minute = row[5]
+            if row[6]!="":
+                discount = float(row[6])*100
+            else:
+                discount = -999
+            openTime = row[7]
+            cuisine = row[8]
+            isopen = row[9]
+            member = row[10]
+            db.restaurants.insert(name=name, region=region, restaurant_id=res_id, day_time=day, hour_time=hour, min_time=minute, open_hours_display=openTime,
+                                  cuisine=cuisine, isopen_correct=isopen, member_restaurant=member, discount=discount)
+        rownum += 1
+    csvFile.close()
+    return "Success"
+
+def runRestaurantDiscountCalculation():
+    db(db.currentDiscounts.id>0).delete()
+    import datetime
+    fulldate = datetime.datetime.today()
+    if fulldate.minute > 30:
+        minute_part = 30
+    else:
+        minute_part = 0
+
+    restaurantList = db((db.restaurants.day_time==fulldate.weekday()+1) &
+                        (db.restaurants.hour_time==fulldate.hour) &
+                        (db.restaurants.min_time==minute_part) ).select(db.restaurants.ALL, orderby=~db.restaurants.discount)
+    for singleRest in restaurantList:
+        # Get the other two discount values for a particular restaurant.
+        disc1 = singleRest.discount
+        disc2 = db( (db.restaurants.name==singleRest.name) &
+                    (db.restaurants.day_time==fulldate.weekday()+1) &
+                    (db.restaurants.hour_time==fulldate.hour+1) &
+                    (db.restaurants.min_time==minute_part) ).select(db.restaurants.ALL, limitby=(0,1)).first().discount
+
+        disc3 = db( (db.restaurants.name==singleRest.name) &
+                    (db.restaurants.day_time==fulldate.weekday()+1) &
+                    (db.restaurants.hour_time==fulldate.hour+2) &
+                    (db.restaurants.min_time==minute_part)).select(db.restaurants.ALL, limitby=(0,1)).first().discount
+
+        minVal=min(abs(disc1),abs(disc2),abs(disc3))
+        if minVal==999:
+            # Means it is closed
+            singleRest.discount=-1
+        else:
+            singleRest.discount=minVal
+        db.currentDiscounts.insert(name=singleRest.name, region=singleRest.region, restaurant_id=singleRest.restaurant_id, day_time=singleRest.day_time, hour_time=singleRest.hour_time,
+                                   min_time=singleRest.min_time, open_hours_display=singleRest.open_hours_display, cuisine=singleRest.cuisine, isopen_correct=singleRest.isopen_correct,
+                                   member_restaurant=singleRest.member_restaurant, discount=singleRest.discount)
+    logging.info("Discount Calculation successful.")
+    return "Discount calculation successful."
 
 def clearDB():
     db(db.restaurants.id>0).delete()
+    db(db.currentDiscounts.id>0).delete()
     return "DB cleared."
+
 
 def user():
     """

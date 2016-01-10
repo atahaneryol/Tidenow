@@ -89,10 +89,34 @@ auth.settings.reset_password_requires_verification = True
 #########################################################################
 db.define_table("restaurants",
     Field('name', 'string'),
-    Field('description', 'string'),
-    Field('logoURL', 'string'),
-    Field('discount', 'integer', default=0),
+    Field('description','string', default=""),
+    Field('region', 'string'),
+    Field('restaurant_id', 'string'),
+    Field('day_time', 'integer'),
+    Field('hour_time', 'integer'),
+    Field('min_time', 'integer'),
+    Field('open_hours_display', 'string'),
+    Field('cuisine', 'string'),
+    Field('isopen_correct', 'string'),
+    Field('member_restaurant', 'string'),
+    Field('logoURL', 'string', default="extra/static/logos/placeholder_logo.jpg"),
+    Field('discount', 'float', default=0),
     )
 
+db.define_table("currentDiscounts",
+    Field('name', 'string'),
+    Field('description','string', default=""),
+    Field('region', 'string'),
+    Field('restaurant_id', 'string'),
+    Field('day_time', 'integer'),
+    Field('hour_time', 'integer'),
+    Field('min_time', 'integer'),
+    Field('open_hours_display', 'string'),
+    Field('cuisine', 'string'),
+    Field('isopen_correct', 'string'),
+    Field('member_restaurant', 'string'),
+    Field('logoURL', 'string', default="extra/static/logos/placeholder_logo.jpg"),
+    Field('discount', 'float', default=0),
+    )
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

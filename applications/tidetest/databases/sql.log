@@ -62,3 +62,225 @@ CREATE TABLE Restaurants(
     discount INTEGER
 );
 success!
+timestamp: 2015-12-12T14:31:55.850000
+ALTER TABLE restaurants ADD open_hours_display CHAR(512);
+timestamp: 2015-12-12T14:31:55.860000
+ALTER TABLE restaurants ADD day_time CHAR(512);
+timestamp: 2015-12-12T14:31:55.868000
+ALTER TABLE restaurants ADD cuisine CHAR(512);
+timestamp: 2015-12-12T14:31:55.876000
+ALTER TABLE restaurants ADD member_restaurant CHAR(512);
+timestamp: 2015-12-12T14:31:55.883000
+ALTER TABLE restaurants ADD region CHAR(512);
+timestamp: 2015-12-12T14:31:55.892000
+ALTER TABLE restaurants ADD restaurant_id CHAR(512);
+timestamp: 2015-12-12T14:31:55.901000
+ALTER TABLE restaurants ADD min_time CHAR(512);
+timestamp: 2015-12-12T14:31:55.908000
+ALTER TABLE restaurants ADD isopen_correct CHAR(512);
+timestamp: 2015-12-12T14:31:55.915000
+ALTER TABLE restaurants ADD hour_time CHAR(512);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2015-12-13T16:38:43.403000
+CREATE TABLE currentDiscounts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    description CHAR(512),
+    region CHAR(512),
+    restaurant_id CHAR(512),
+    day_time INTEGER,
+    hour_time INTEGER,
+    min_time INTEGER,
+    open_hours_display CHAR(512),
+    cuisine CHAR(512),
+    isopen_correct CHAR(512),
+    member_restaurant CHAR(512),
+    logoURL CHAR(512),
+    discount DOUBLE
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
